@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0054a6">
+    <title>Cidadão Digital Seguro</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --prodemge-blue: #0054a6;
+            --prodemge-blue-dark: #003d7a;
+            --prodemge-orange: #f39200;
+            --prodemge-orange-light: #ffac31;
+            --surface: #ffffff;
+            --background: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-border: #e2e8f0;
+            --nav-bg: linear-gradient(135deg, #0054a6 0%, #003d7a 100%);
+        }
+
+        body.dark-mode {
+            --surface: #0f172a;
+            --background: #020617;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --card-border: #1e293b;
+            --nav-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        .app-shell {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: var(--surface);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .app-shell {
+                max-width: 480px;
+                margin: 20px auto;
+                border-radius: 32px;
+                min-height: calc(100vh - 40px);
+                box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        .main-header {
+            background: var(--nav-bg);
+            color: white;
+            padding: 1rem 1.25rem 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-link {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            padding-bottom: 4px;
+            transition: all 0.2s;
+            letter-spacing: 0.025em;
+            white-space: nowrap;
+        }
+
+        .nav-link.active {
+            color: var(--prodemge-orange);
+            border-bottom: 2px solid var(--prodemge-orange);
+        }
+
+        .pro-card {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+        }
+
+        .btn-prodemge {
+            background-color: var(--prodemge-orange);
+            color: white;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Estilos Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+            padding-top: 1rem;
+        }
+        .accordion-item.active .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .info-tag {
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container" class="app-shell overflow-hidden">
+        
+        <!-- HEADER -->
+        <header class="main-header shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/10 p-2 rounded-xl backdrop-blur-sm">
+                        <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-base font-black tracking-tight leading-none uppercase text-white">Cidadão Digital</h1>
+                        <p class="text-[7px] opacity-60 mt-0.5 font-bold uppercase tracking-[0.2em] text-white">Defesa e Prevenção</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDarkMode()" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/10 text-white">
+                        <span id="theme-toggle text-sm">🌙</span>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="flex gap-4 border-t border-white/5 pt-2 overflow-x-auto no-scrollbar">
+                <button onclick="setView('home')" id="btn-home" class="nav-link active">Início</button>
+                <button onclick="setView('edu')" id="btn-edu" class="nav-link">Educação</button>
+                <button onclick="setView('quiz')" id="btn-quiz" class="nav-link">Simulador</button>
+                <button onclick="setView('help')" id="btn-help" class="nav-link">Canais</button>
+            </nav>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow p-6 overflow-y-auto">
+            
+            <!-- HOME VIEW -->
+            <section id="view-home" class="animate__animated animate__fadeIn">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-black text-main leading-tight">Olá, <span class="text-[#f39200]">Cidadão.</span></h2>
+                    <p class="text-sm text-muted mt-2">Proteja os seus dados e identifique fraudes comuns no Estado de Minas Gerais.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div onclick="setView('edu')" class="pro-card p-5 flex items-center justify-between cursor-pointer border-l-4 border-l-[#0054a6] active:scale-95 transition-transform">
+                        <div class="flex items-center gap-4">
+                            <span class="text-xl">📖</span>
+                            <div>
+                                <h3 class="text-xs font-black text-main uppercase">Base de Conhecimento</h3>
+                                <p class="text-[10px] text-muted">Aprenda sobre LGPD e Tecnologia.</p>
+                            </div>
+                        </div>
+                        <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div onclick="setView('quiz')" class="bg-[#003d7a] rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden group cursor-pointer border-b-8 border-b-orange-600">
+                        <div class="relative z-10">
+                            <span class="text-[10px] font-black text-orange-400 tracking-[0.25em] uppercase">Desafio Prático</span>
+                            <h3 class="text-xl font-black mt-2 mb-4">Você cairia neste golpe?</h3>
+                            <button class="btn-prodemge text-[9px] px-6 py-3 rounded-xl shadow-lg">Testar meus reflexos</button>
+                        </div>
+                        <div class="absolute -right-4 -bottom-4 opacity-10">
+                            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EDUCATION VIEW -->
+            <section id="view-edu" class="hidden animate__animated animate__fadeIn">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-black text-main tracking-tight">Educação <span class="text-[#0054a6] dark:text-[#38bdf8]">Digital</span></h2>
+                    <p class="text-xs text-muted mt-2">Toque nos temas para expandir o conhecimento essencial.</p>
+                </div>
+
+                <div class="space-y-3" id="accordion-container">
+                    <div class="accordion-item pro-card p-4">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion(this)">
+                            <div>
+                                <span class="info-tag bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">Privacidade</span>
+                                <h3 class="text-sm font-black text-main uppercase">1. LGPD em Minas</h3>
+                            </div>
+                            <svg class="chevron-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="text-[11px] text-muted leading-relaxed">A **Lei Geral de Proteção de Dados** garante que o Governo de Minas Gerais trate as suas informações com transparência.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item pro-card p-4">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion(this)">
+                            <div>
+                                <span class="info-tag bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">Tecnologia</span>
+                                <h3 class="text-sm font-black text-main uppercase">2. O Cadeado (HTTPS)</h3>
+                            </div>
+                            <svg class="chevron-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="text-[11px] text-muted leading-relaxed">O protocolo **HTTPS** cria um túnel criptografado seguro para as suas informações.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item pro-card p-4">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion(this)">
+                            <div>
+                                <span class="info-tag bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">Segurança</span>
+                                <h3 class="text-sm font-black text-main uppercase">3. Autenticação (MFA)</h3>
+                            </div>
+                            <svg class="chevron-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="text-[11px] text-muted leading-relaxed">Camadas extras de proteção para as suas contas oficiais.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item pro-card p-4">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion(this)">
+                            <div>
+                                <span class="info-tag bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400">Ameaça</span>
+                                <h3 class="text-sm font-black text-main uppercase">4. Phishing (Pesca)</h3>
+                            </div>
+                            <svg class="chevron-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="text-[11px] text-muted leading-relaxed">Tentativas de roubo de dados através de links maliciosos.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item pro-card p-4">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion(this)">
+                            <div>
+                                <span class="info-tag bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">Psicologia</span>
+                                <h3 class="text-sm font-black text-main uppercase">5. Engenharia Social</h3>
+                            </div>
+                            <svg class="chevron-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="text-[11px] text-muted leading-relaxed">Enganos psicológicos para capturar credenciais confidenciais.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUIZ VIEW -->
+            <section id="view-quiz" class="hidden animate__animated animate__fadeIn">
+                <div id="quiz-start" class="text-center py-10">
+                    <div class="w-20 h-20 bg-blue-50/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-inner text-[#0054a6]">🛡️</div>
+                    <h2 class="text-2xl font-black text-main tracking-tight">Escudo Digital</h2>
+                    <button onclick="initQuiz()" class="mt-8 w-full btn-prodemge py-5 rounded-2xl shadow-xl">INICIAR TESTE</button>
+                </div>
+                <div id="quiz-run" class="hidden">
+                    <div id="q-box"></div>
+                </div>
+            </section>
+
+            <!-- HELP VIEW (REORGANIZADA) -->
+            <section id="view-help" class="hidden animate__animated animate__fadeIn">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-black text-main tracking-tight">Canais de <span class="text-orange-500">Apoio</span></h2>
+                    <p class="text-xs text-muted mt-2">Links oficiais e ferramentas de segurança fundamentais.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- 1. Delegacia Virtual -->
+                    <a href="https://www.delegaciavirtual.sids.mg.gov.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-rose-500 hover:shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div class="pr-4">
+                                <h4 class="text-xs font-black uppercase text-main">1. Delegacia Virtual MG</h4>
+                                <p class="text-[10px] text-muted mt-1 leading-relaxed">Registe boletins de ocorrência online para crimes de estelionato e fraudes digitais.</p>
+                            </div>
+                            <span class="text-lg">🚨</span>
+                        </div>
+                    </a>
+
+                    <!-- 2. Portal Minas Gerais (Novo) -->
+                    <a href="https://www.mg.gov.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-blue-800 hover:shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div class="pr-4">
+                                <h4 class="text-xs font-black uppercase text-main">2. Portal de Serviços MG</h4>
+                                <p class="text-[10px] text-muted mt-1 leading-relaxed">Aceda a todos os serviços oficiais do estado em um único local seguro.</p>
+                            </div>
+                            <span class="text-lg">🏛️</span>
+                        </div>
+                    </a>
+
+                    <!-- 3. CERT.br -->
+                    <a href="https://cartilha.cert.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-emerald-500 hover:shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div class="pr-4">
+                                <h4 class="text-xs font-black uppercase text-main">3. CERT.br (CGI.br)</h4>
+                                <p class="text-[10px] text-muted mt-1 leading-relaxed">Centro de Estudos e Resposta a Incidentes de Segurança no Brasil.</p>
+                            </div>
+                            <span class="text-lg">🛡️</span>
+                        </div>
+                    </a>
+
+                    <!-- 4. Registro.br -->
+                    <a href="https://registro.br/tecnologia/ferramentas/whois/" target="_blank" class="pro-card p-5 block border-l-4 border-l-purple-500 hover:shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div class="pr-4">
+                                <h4 class="text-xs font-black uppercase text-main">4. WHOIS (Registro.br)</h4>
+                                <p class="text-[10px] text-muted mt-1 leading-relaxed">Verifique a autenticidade e a propriedade de domínios brasileiros.</p>
+                            </div>
+                            <span class="text-lg">🔍</span>
+                        </div>
+                    </a>
+
+                    <!-- 5. Consumidor.gov -->
+                    <a href="https://www.consumidor.gov.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-orange-400 hover:shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div class="pr-4">
+                                <h4 class="text-xs font-black uppercase text-main">5. Consumidor.gov.br</h4>
+                                <p class="text-[10px] text-muted mt-1 leading-relaxed">Resolução de conflitos de dados e segurança com empresas privadas.</p>
+                            </div>
+                            <span class="text-lg">⚖️</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="p-6 text-center border-t border-slate-200 dark:border-slate-800">
+            <p class="text-[7px] text-muted font-black uppercase tracking-[0.25em]">
+                Débora ADS | Extensão Ampli 2024<br>
+                <span class="text-[#0054a6] dark:text-[#38bdf8]">Apoio Institucional: Prodemge</span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        let isDark = false;
+        function toggleDarkMode() {
+            isDark = !isDark;
+            document.body.classList.toggle('dark-mode', isDark);
+            document.getElementById('theme-toggle').innerText = isDark ? '☀️' : '🌙';
+        }
+        function setView(id) {
+            ['home', 'quiz', 'help', 'edu'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                document.getElementById(`btn-${v}`).classList.remove('active');
+            });
+            document.getElementById(`view-${id}`).classList.remove('hidden');
+            document.getElementById(`btn-${id}`).classList.add('active');
+        }
+        function toggleAccordion(element) {
+            const item = element.parentElement;
+            const isActive = item.classList.contains('active');
+            document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+            if (!isActive) item.classList.add('active');
+        }
+        const scenarios = [
+            { t: "IPVA Minas 2024", d: "Site: ipva-mg.pagamentos-facil.net", s: true, f: "GOLPE! Domínios oficiais de Minas terminam sempre em .mg.gov.br." },
+            { t: "Login Gov.br", d: "Site: https://acesso.gov.br", s: false, f: "SEGURO! Este é o portal oficial de autenticação do governo federal." }
+        ];
+        let idx = 0;
+        function initQuiz() {
+            document.getElementById('quiz-start').classList.add('hidden');
+            document.getElementById('quiz-run').classList.remove('hidden');
+            renderCase();
+        }
+        function renderCase() {
+            const c = scenarios[idx];
+            document.getElementById('q-box').innerHTML = `
+                <div class="animate__animated animate__fadeIn">
+                    <h3 class="text-sm font-black text-main mb-4 uppercase">${c.t}</h3>
+                    <div class="bg-slate-900 p-6 rounded-2xl text-orange-400 font-mono text-[10px] shadow-xl mb-8 break-all">${c.d}</div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="check(false)" class="bg-surface border border-card-border py-4 rounded-xl font-black text-[9px] uppercase">SEGURO</button>
+                        <button onclick="check(true)" class="bg-surface border border-card-border py-4 rounded-xl font-black text-[9px] uppercase text-orange-500">SUSPEITO</button>
+                    </div>
+                </div>`;
+        }
+        function check(val) {
+            const c = scenarios[idx];
+            const correct = val === c.s;
+            document.getElementById('q-box').innerHTML = `
+                <div class="text-center p-6 animate__animated animate__zoomIn">
+                    <span class="text-4xl">${correct ? '✅' : '❌'}</span>
+                    <h4 class="text-sm font-black mt-4 uppercase">${correct ? 'Boa!' : 'Cuidado!'}</h4>
+                    <p class="text-[10px] text-muted mt-2 mb-6">${c.f}</p>
+                    <button onclick="idx++; idx < scenarios.length ? renderCase() : setView('home')" class="w-full btn-prodemge py-3 rounded-xl text-[9px] font-black uppercase">Continuar</button>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
