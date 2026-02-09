@@ -6,6 +6,9 @@
     <meta name="theme-color" content="#0054a6">
     <title>Cidadão Digital Seguro</title>
     
+    <!-- Link para o Manifesto PWA (Conecta com o ficheiro manifest.json) -->
+    <link rel="manifest" href="manifest.json">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
@@ -147,7 +150,7 @@
                 
                 <div class="flex items-center gap-2">
                     <button onclick="toggleDarkMode()" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/10 text-white">
-                        <span id="theme-toggle text-sm">🌙</span>
+                        <span id="theme-toggle">🌙</span>
                     </button>
                 </div>
             </div>
@@ -282,7 +285,7 @@
                 </div>
             </section>
 
-            <!-- HELP VIEW (REORGANIZADA) -->
+            <!-- HELP VIEW -->
             <section id="view-help" class="hidden animate__animated animate__fadeIn">
                 <div class="mb-6">
                     <h2 class="text-2xl font-black text-main tracking-tight">Canais de <span class="text-orange-500">Apoio</span></h2>
@@ -290,7 +293,6 @@
                 </div>
 
                 <div class="space-y-4">
-                    <!-- 1. Delegacia Virtual -->
                     <a href="https://www.delegaciavirtual.sids.mg.gov.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-rose-500 hover:shadow-md">
                         <div class="flex justify-between items-start">
                             <div class="pr-4">
@@ -301,7 +303,6 @@
                         </div>
                     </a>
 
-                    <!-- 2. Portal Minas Gerais (Novo) -->
                     <a href="https://www.mg.gov.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-blue-800 hover:shadow-md">
                         <div class="flex justify-between items-start">
                             <div class="pr-4">
@@ -312,7 +313,6 @@
                         </div>
                     </a>
 
-                    <!-- 3. CERT.br -->
                     <a href="https://cartilha.cert.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-emerald-500 hover:shadow-md">
                         <div class="flex justify-between items-start">
                             <div class="pr-4">
@@ -323,7 +323,6 @@
                         </div>
                     </a>
 
-                    <!-- 4. Registro.br -->
                     <a href="https://registro.br/tecnologia/ferramentas/whois/" target="_blank" class="pro-card p-5 block border-l-4 border-l-purple-500 hover:shadow-md">
                         <div class="flex justify-between items-start">
                             <div class="pr-4">
@@ -334,7 +333,6 @@
                         </div>
                     </a>
 
-                    <!-- 5. Consumidor.gov -->
                     <a href="https://www.consumidor.gov.br/" target="_blank" class="pro-card p-5 block border-l-4 border-l-orange-400 hover:shadow-md">
                         <div class="flex justify-between items-start">
                             <div class="pr-4">
@@ -358,12 +356,22 @@
     </div>
 
     <script>
+        // --- CONEXÃO COM O SERVICE WORKER (SW.JS) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW ativo com sucesso!', reg))
+                    .catch(err => console.log('Falha ao registar o SW:', err));
+            });
+        }
+
         let isDark = false;
         function toggleDarkMode() {
             isDark = !isDark;
             document.body.classList.toggle('dark-mode', isDark);
             document.getElementById('theme-toggle').innerText = isDark ? '☀️' : '🌙';
         }
+
         function setView(id) {
             ['home', 'quiz', 'help', 'edu'].forEach(v => {
                 document.getElementById(`view-${v}`).classList.add('hidden');
@@ -372,22 +380,26 @@
             document.getElementById(`view-${id}`).classList.remove('hidden');
             document.getElementById(`btn-${id}`).classList.add('active');
         }
+
         function toggleAccordion(element) {
             const item = element.parentElement;
             const isActive = item.classList.contains('active');
             document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
             if (!isActive) item.classList.add('active');
         }
+
         const scenarios = [
             { t: "IPVA Minas 2024", d: "Site: ipva-mg.pagamentos-facil.net", s: true, f: "GOLPE! Domínios oficiais de Minas terminam sempre em .mg.gov.br." },
             { t: "Login Gov.br", d: "Site: https://acesso.gov.br", s: false, f: "SEGURO! Este é o portal oficial de autenticação do governo federal." }
         ];
+
         let idx = 0;
         function initQuiz() {
             document.getElementById('quiz-start').classList.add('hidden');
             document.getElementById('quiz-run').classList.remove('hidden');
             renderCase();
         }
+
         function renderCase() {
             const c = scenarios[idx];
             document.getElementById('q-box').innerHTML = `
@@ -400,6 +412,7 @@
                     </div>
                 </div>`;
         }
+
         function check(val) {
             const c = scenarios[idx];
             const correct = val === c.s;
