@@ -1,0 +1,17 @@
+{
+  "name": "Cidadão Digital Seguro",
+  "short_name": "CidDigital",
+  "description": "Portal de Segurança Digital - Projeto de Extensão ADS",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0054a6",
+  "theme_color": "#0054a6",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1162/1162251.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
